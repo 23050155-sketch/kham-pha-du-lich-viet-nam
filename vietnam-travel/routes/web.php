@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CommentController;
@@ -49,6 +51,33 @@ Route::get('/login', [AuthController::class, 'showLogin'])
 
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.submit');
+
+// Quên mật khẩu
+Route::middleware('guest')->group(function () {
+
+    Route::get(
+        '/forgot-password',
+        [ForgotPasswordController::class, 'showForm']
+    )->name('password.request');
+
+    Route::post(
+        '/forgot-password',
+        [ForgotPasswordController::class, 'sendLink']
+    )->middleware('throttle:5,1')
+     ->name('password.email');
+
+    Route::get(
+        '/reset-password/{token}',
+        [ResetPasswordController::class, 'showForm']
+    )->name('password.reset');
+
+    Route::post(
+        '/reset-password',
+        [ResetPasswordController::class, 'reset']
+    )->middleware('throttle:5,1')
+     ->name('password.update');
+
+});
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');

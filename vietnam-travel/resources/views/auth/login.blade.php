@@ -121,6 +121,25 @@
 
             margin-bottom: 20px;
         }
+
+
+
+        .forgot-password-link {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .forgot-password-link a {
+            color: #0d9488;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .forgot-password-link a:hover {
+            color: #0f766e;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -181,6 +200,12 @@
                     name="password"
                     required
                 >
+
+                <div class="forgot-password-link">
+                    <a href="{{ route('password.request') }}">
+                        Quên mật khẩu?
+                    </a>
+                </div>
 
             </div>
 

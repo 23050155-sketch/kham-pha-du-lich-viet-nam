@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đặt lại mật khẩu - TPĐĐ Travel</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        .auth-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 430px;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .auth-card label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .auth-card input:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+
+        .auth-card button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: #0d9488;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-card button:hover {
+            background: #0f766e;
+        }
+
+        .error {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #0d9488;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+
+        .password-hint {
+            display: block;
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<x-navbar />
+
+<div class="auth-container">
+    <div class="auth-card">
+
+        <h1>Đặt lại mật khẩu</h1>
+
+        <p class="subtitle">
+            Tạo mật khẩu mới để tiếp tục sử dụng TPĐĐ Travel.
+        </p>
+
+        @if($errors->any())
+            <div class="error">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.update') }}">
+            @csrf
+
+            <input type="hidden" name="token" value="{{ $token }}">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email', $email) }}"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu mới</label>
+
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    minlength="8"
+                    required
+                    autocomplete="new-password"
+                >
+
+                <small class="password-hint">
+                    Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa,
+                    chữ thường, số và ký tự đặc biệt.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation">
+                    Xác nhận mật khẩu mới
+                </label>
+
+                <input
+                    id="password_confirmation"
+                    type="password"
+                    name="password_confirmation"
+                    minlength="8"
+                    required
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <button type="submit">
+                Cập nhật mật khẩu
+            </button>
+        </form>
+
+        <a href="{{ route('login') }}" class="back-link">
+            ← Quay lại đăng nhập
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>
