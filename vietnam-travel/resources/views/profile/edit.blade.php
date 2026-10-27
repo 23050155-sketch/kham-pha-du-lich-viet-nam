@@ -461,6 +461,50 @@
 
             line-height: 1.6;
         }
+
+
+
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field input {
+            padding-right: 52px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            margin: 0;
+
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            background: #f1f5f9;
+            color: #0d9488;
+        }
+
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
     </style>
 
 </head>
@@ -706,11 +750,29 @@
                         Mật khẩu hiện tại
                     </label>
 
-                    <input
-                        type="password"
-                        name="current_password"
-                        required
-                    >
+                    <div class="password-field">
+                        <input
+                            type="password"
+                            name="current_password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            aria-label="Hiện mật khẩu"
+                            aria-pressed="false"
+                            onclick="togglePassword(this)"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
 
                 </div>
 
@@ -721,11 +783,37 @@
                         Mật khẩu mới
                     </label>
 
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                    >
+                    <div class="password-field">
+
+                        <input
+                            type="password"
+                            name="password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            aria-label="Hiện mật khẩu"
+                            aria-pressed="false"
+                            onclick="togglePassword(this)"
+                        >
+                            <svg viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+
+                            </svg>
+                        </button>
+
+                    </div>
 
                     <small class="password-hint">
                         Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa,
@@ -741,11 +829,36 @@
                         Xác nhận mật khẩu mới
                     </label>
 
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        required
-                    >
+                    <div class="password-field">
+
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            aria-label="Hiện mật khẩu"
+                            aria-pressed="false"
+                            onclick="togglePassword(this)"
+                        >
+                            <svg viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+
+                            </svg>
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -802,6 +915,43 @@
 
 
 @include('components.footer')
+
+
+
+<script>
+function togglePassword(button) {
+    const input = button.closest('.password-field').querySelector('input');
+    const isVisible = input.type === 'text';
+
+    input.type = isVisible ? 'password' : 'text';
+
+    button.setAttribute(
+        'aria-label',
+        isVisible ? 'Hiện mật khẩu' : 'Ẩn mật khẩu'
+    );
+
+    button.setAttribute('aria-pressed', String(!isVisible));
+
+    button.innerHTML = isVisible
+        ? `<svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                <circle cx="12" cy="12" r="3"/>
+           </svg>`
+        : `<svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3l18 18"/>
+                <path d="M10.6 5.1A11 11 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-4 4.7"/>
+                <path d="M6.2 6.2C3.5 8.1 2 12 2 12s3.5 7 10 7a10 10 0 0 0 4.2-.9"/>
+                <path d="M10 10a3 3 0 0 0 4 4"/>
+           </svg>`;
+}
+</script>
+
+
+
 
 </body>
 
