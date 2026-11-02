@@ -724,6 +724,28 @@
         }
 
     }
+
+
+
+    /* Gạch chân mục đang được chọn trên Navbar */
+    .nav-links a.nav-active {
+        font-weight: 700;
+    }
+
+    .nav-links a.nav-active:not(.login-btn)::after {
+        width: 100%;
+        height: 3px;
+        background: white;
+    }
+
+    /* Trên điện thoại: đánh dấu bằng nền xanh nhạt */
+    @media (max-width: 768px) {
+        .nav-links a.nav-active {
+            color: #0f766e;
+            background: #ccfbf1;
+            font-weight: 700;
+        }
+    }
 </style>
 
 
@@ -804,20 +826,28 @@
             id="mobileNavLinks"
         >
 
-            <a href="{{ url('/') }}">
-                Trang chủ
+            <a href="{{ url('/') }}"
+                class="{{ request()->is('/') ? 'nav-active' : '' }}"
+                @if(request()->is('/')) aria-current="page" @endif>
+                    Trang chủ
             </a>
 
-            <a href="{{ route('explore.index') }}">
-                Khám phá
+            <a href="{{ route('explore.index') }}"
+                class="{{ request()->routeIs('explore.*') ? 'nav-active' : '' }}"
+                @if(request()->routeIs('explore.*')) aria-current="page" @endif>
+                    Khám phá
             </a>
 
             @auth
-                <a href="{{ route('itineraries.index') }}">
+                <a href="{{ route('itineraries.index') }}"
+                class="{{ request()->routeIs('itineraries.*') ? 'nav-active' : '' }}"
+                @if(request()->routeIs('itineraries.*')) aria-current="page" @endif>
                     Lịch trình
                 </a>
             @else
-                <a href="{{ route('itineraries.create') }}">
+                <a href="{{ route('itineraries.create') }}"
+                class="{{ request()->routeIs('itineraries.*') ? 'nav-active' : '' }}"
+                @if(request()->routeIs('itineraries.*')) aria-current="page" @endif>
                     Lịch trình
                 </a>
             @endauth

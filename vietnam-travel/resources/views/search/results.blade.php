@@ -1757,7 +1757,7 @@
 
 
 <x-compare-bar />
-
+@include('components.chatbot')
 
 </body>
 

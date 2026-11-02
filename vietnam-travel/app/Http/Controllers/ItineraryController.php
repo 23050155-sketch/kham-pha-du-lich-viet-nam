@@ -631,13 +631,6 @@ class ItineraryController extends Controller
             'end_time' => $validated['end_time'],
         ]);
 
-        
-        $item->update([
-            'day_number' => $validated['day_number'],
-            'start_time' => $validated['start_time'],
-            'end_time' => $validated['end_time'],
-        ]);
-
         // Sắp xếp lại thứ tự theo giờ
         $this->reorderItineraryItems($itinerary);
 
@@ -890,16 +883,6 @@ class ItineraryController extends Controller
         // ==========================================
         // 7. THÊM ĐỊA ĐIỂM
         // ==========================================
-
-        ItineraryItem::create([
-            'itinerary_id' => $itinerary->id,
-            'place_id' => $place->id,
-            'day_number' => $validated['day_number'],
-            'start_time' => $validated['start_time'],
-            'end_time' => $validated['end_time'],
-            'sort_order' => $sortOrder,
-        ]);
-
 
         ItineraryItem::create([
             'itinerary_id' => $itinerary->id,

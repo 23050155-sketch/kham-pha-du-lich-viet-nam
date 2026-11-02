@@ -833,6 +833,7 @@
 </div>
 
 @include('components.footer')
+@include('components.chatbot')
 
 </body>
 

@@ -1331,6 +1331,7 @@
 </div>
 
 @include('components.footer')
+@include('components.chatbot')
 
 <x-compare-bar />
 

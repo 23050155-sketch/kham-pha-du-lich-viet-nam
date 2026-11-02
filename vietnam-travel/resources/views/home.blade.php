@@ -2938,6 +2938,7 @@
 
     <x-compare-bar />
 
+    <x-chatbot />          
 
 </body>
 </html>

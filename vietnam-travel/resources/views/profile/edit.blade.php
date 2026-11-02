@@ -951,7 +951,7 @@ function togglePassword(button) {
 </script>
 
 
-
+@include('components.chatbot')
 
 </body>
 

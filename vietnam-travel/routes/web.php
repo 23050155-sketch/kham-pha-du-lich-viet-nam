@@ -15,6 +15,7 @@ use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\CompareController;
+use App\Http\Controllers\ChatbotController;
 
 
 use App\Http\Controllers\Admin\DashboardController;
@@ -361,3 +362,23 @@ Route::middleware(['auth', 'admin'])
 
 
 
+// AI Chatbot TPĐĐ Travel
+Route::post('/chatbot/message', [ChatbotController::class, 'message'])
+    ->middleware('throttle:10,1')
+    ->name('chatbot.message');
+
+// Chuẩn bị dữ liệu lịch trình từ AI
+Route::post(
+    '/chatbot/itinerary/prepare',
+    [ChatbotController::class, 'prepareItinerary']
+)
+    ->middleware(['auth', 'throttle:5,1'])
+    ->name('chatbot.itinerary.prepare');
+
+// Lưu lịch trình AI sau khi người dùng xác nhận
+Route::post(
+    '/chatbot/itinerary/save',
+    [ChatbotController::class, 'saveItinerary']
+)
+    ->middleware(['auth', 'throttle:5,1'])
+    ->name('chatbot.itinerary.save');
