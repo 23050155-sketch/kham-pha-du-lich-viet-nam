@@ -11,6 +11,7 @@ use App\Models\ViewHistory;
 use App\Models\Favorite;
 use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
+use App\Support\TravelPlaceFinder;
 
 class HomeController extends Controller
 {
@@ -42,6 +43,20 @@ class HomeController extends Controller
             ->where('is_featured', true)
             ->limit(6)
             ->get();
+
+        
+        // =====================================
+        // ĐỊA ĐIỂM DU LỊCH THEO THÁNG HIỆN TẠI
+        // =====================================
+
+        // Lấy tháng hiện tại theo giờ Việt Nam
+        $currentMonth = now('Asia/Ho_Chi_Minh')->month;
+
+        // Lấy tối đa 8 địa điểm phù hợp với tháng
+        $monthlyPlaces = TravelPlaceFinder::search(
+            month: $currentMonth,
+            limit: 6
+        );     
 
 
         // Địa điểm được quan tâm nhiều
@@ -711,7 +726,9 @@ class HomeController extends Controller
                 'popularPlaces',
                 'categories',
                 'recommendedPlaces',
-                'recommendationMode'
+                'recommendationMode',
+                'currentMonth',
+                'monthlyPlaces'
             )
         );
     }

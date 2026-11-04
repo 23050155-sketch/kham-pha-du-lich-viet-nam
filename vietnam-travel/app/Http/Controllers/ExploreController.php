@@ -13,7 +13,13 @@ class ExploreController extends Controller
     {
         $query = Province::query();
 
+        
+        // Lọc tỉnh/thành theo vùng miền
+        $region = $request->query('region');
 
+        if (in_array($region, ['north', 'central', 'south'], true)) {
+            $query->where('region', $region);
+        }
 
         $categories = Category::orderBy('name')->get();
 

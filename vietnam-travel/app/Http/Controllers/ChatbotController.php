@@ -945,7 +945,14 @@ Nhiệm vụ:
 - Mỗi địa điểm có day_number, start_time, end_time và sort_order.
 - Thời gian dùng định dạng HH:mm.
 - Không xếp hai địa điểm trùng thời gian trong cùng một ngày.
-- Không xếp địa điểm ngoài giờ mở cửa hoặc giờ đóng cửa đã biết.
+- Khi tạo start_time và end_time, bắt buộc đối chiếu open_time và close_time của từng địa điểm trong DANH SÁCH ĐỊA ĐIỂM MYSQL.
+- start_time phải lớn hơn hoặc bằng open_time nếu dữ liệu giờ mở cửa có sẵn.
+- end_time phải nhỏ hơn hoặc bằng close_time nếu dữ liệu giờ đóng cửa có sẵn.
+- Nếu lịch trình chatbot gợi ý giờ tham quan vượt giờ hoạt động, được phép điều chỉnh giờ tham quan để phù hợp với dữ liệu MySQL, nhưng không được thay địa điểm hoặc thay ngày tham quan.
+- Ưu tiên giữ thời lượng tham quan theo visit_duration_min nếu dữ liệu này có sẵn và có đủ thời gian.
+- Nếu không đủ thời gian, có thể rút ngắn thời lượng tham quan hoặc sắp xếp lại các địa điểm trong cùng một ngày để tránh trùng lịch.
+- Không tạo khoảng thời gian có end_time nhỏ hơn hoặc bằng start_time.
+- Không tự suy đoán giờ mở cửa hoặc đóng cửa khi dữ liệu MySQL không có.
 - Nếu thiếu thông tin thời gian, có thể đề xuất thời gian tham khảo.
 - Chỉ trả về JSON hợp lệ, không Markdown, không giải thích.
 
@@ -1122,6 +1129,190 @@ PROMPT;
                     'message' => 'Lịch trình AI có địa điểm không tồn tại, đã bị ẩn hoặc không thuộc tỉnh/thành được chọn.',
                 ], 422);
             }
+
+
+            // ==========================================
+            // TỰ ĐIỀU CHỈNH GIỜ THAM QUAN THEO MYSQL
+            // ==========================================
+
+            foreach ($itineraryData['items'] as &$item) {
+                $place = $validPlaces->get($item['place_id']);
+
+                $startMinutes = ((int) substr($item['start_time'], 0, 2)) * 60
+                    + (int) substr($item['start_time'], 3, 2);
+
+                $endMinutes = ((int) substr($item['end_time'], 0, 2)) * 60
+                    + (int) substr($item['end_time'], 3, 2);
+
+                $duration = $endMinutes - $startMinutes;
+
+                // Chỉ xử lý các khoảng thời gian hợp lệ.
+                if ($duration <= 0) {
+                    continue;
+                }
+
+                $openMinutes = null;
+                $closeMinutes = null;
+
+                if ($place->open_time) {
+                    $openTime = substr((string) $place->open_time, 0, 5);
+
+                    $openMinutes = ((int) substr($openTime, 0, 2)) * 60
+                        + (int) substr($openTime, 3, 2);
+                }
+
+                if ($place->close_time) {
+                    $closeTime = substr((string) $place->close_time, 0, 5);
+
+                    $closeMinutes = ((int) substr($closeTime, 0, 2)) * 60
+                        + (int) substr($closeTime, 3, 2);
+                }
+
+                // Nếu bắt đầu trước giờ mở cửa, đẩy đến giờ mở cửa.
+                if ($openMinutes !== null && $startMinutes < $openMinutes) {
+                    $startMinutes = $openMinutes;
+                    $endMinutes = $startMinutes + $duration;
+                }
+
+                // Nếu kết thúc sau giờ đóng cửa, dịch lịch về sớm hơn.
+                if ($closeMinutes !== null && $endMinutes > $closeMinutes) {
+                    $endMinutes = $closeMinutes;
+                    $startMinutes = $endMinutes - $duration;
+                }
+
+                // Nếu thời lượng quá dài, rút ngắn trong giờ hoạt động.
+                if (
+                    $openMinutes !== null &&
+                    $closeMinutes !== null &&
+                    $startMinutes < $openMinutes
+                ) {
+                    $startMinutes = $openMinutes;
+                    $endMinutes = $closeMinutes;
+                }
+
+                // Không chấp nhận khoảng thời gian không thể điều chỉnh hợp lệ.
+                if (
+                    $startMinutes < 0 ||
+                    $endMinutes > 1439 ||
+                    $startMinutes >= $endMinutes
+                ) {
+                    return response()->json([
+                        'message' => 'Không thể sắp xếp thời gian tham quan phù hợp cho '
+                            . $place->name
+                            . '. Vui lòng điều chỉnh lịch trình hoặc thử tạo lại.',
+                    ], 422);
+                }
+
+                $item['start_time'] = sprintf(
+                    '%02d:%02d',
+                    intdiv($startMinutes, 60),
+                    $startMinutes % 60
+                );
+
+                $item['end_time'] = sprintf(
+                    '%02d:%02d',
+                    intdiv($endMinutes, 60),
+                    $endMinutes % 60
+                );
+            }
+            unset($item);
+
+
+            // ==========================================
+            // TỰ SẮP XẾP LẠI CÁC ĐỊA ĐIỂM BỊ TRÙNG GIỜ
+            // ==========================================
+
+            $itemsGrouped = collect($itineraryData['items'])
+                ->groupBy('day_number');
+
+            foreach ($itemsGrouped as $dayItems) {
+                $sortedItems = $dayItems
+                    ->sortBy('start_time')
+                    ->values();
+
+                $previousEndMinutes = null;
+
+                foreach ($sortedItems as $item) {
+                    $place = $validPlaces->get($item['place_id']);
+
+                    $startMinutes = ((int) substr($item['start_time'], 0, 2)) * 60
+                        + (int) substr($item['start_time'], 3, 2);
+
+                    $endMinutes = ((int) substr($item['end_time'], 0, 2)) * 60
+                        + (int) substr($item['end_time'], 3, 2);
+
+                    $duration = $endMinutes - $startMinutes;
+
+                    // Dành 15 phút chuyển tiếp giữa hai địa điểm.
+                    if ($previousEndMinutes !== null) {
+                        $startMinutes = max(
+                            $startMinutes,
+                            $previousEndMinutes + 15
+                        );
+
+                        $endMinutes = $startMinutes + $duration;
+                    }
+
+                    // Đối chiếu giờ mở cửa.
+                    if ($place->open_time) {
+                        $openTime = substr((string) $place->open_time, 0, 5);
+
+                        $openMinutes = ((int) substr($openTime, 0, 2)) * 60
+                            + (int) substr($openTime, 3, 2);
+
+                        if ($startMinutes < $openMinutes) {
+                            $startMinutes = $openMinutes;
+                            $endMinutes = $startMinutes + $duration;
+                        }
+                    }
+
+                    // Đối chiếu giờ đóng cửa.
+                    if ($place->close_time) {
+                        $closeTime = substr((string) $place->close_time, 0, 5);
+
+                        $closeMinutes = ((int) substr($closeTime, 0, 2)) * 60
+                            + (int) substr($closeTime, 3, 2);
+
+                        if ($endMinutes > $closeMinutes) {
+                            return response()->json([
+                                'message' => 'Không đủ thời gian để tham quan '
+                                    . $place->name
+                                    . ' trước giờ đóng cửa. Vui lòng điều chỉnh lịch trình.',
+                            ], 422);
+                        }
+                    }
+
+                    if ($startMinutes >= $endMinutes || $endMinutes > 1439) {
+                        return response()->json([
+                            'message' => 'Không thể sắp xếp thời gian tham quan phù hợp cho '
+                                . $place->name . '.',
+                        ], 422);
+                    }
+
+                    // Cập nhật item gốc.
+                    foreach ($itineraryData['items'] as &$originalItem) {
+                        if ($originalItem['place_id'] === $item['place_id']) {
+                            $originalItem['start_time'] = sprintf(
+                                '%02d:%02d',
+                                intdiv($startMinutes, 60),
+                                $startMinutes % 60
+                            );
+
+                            $originalItem['end_time'] = sprintf(
+                                '%02d:%02d',
+                                intdiv($endMinutes, 60),
+                                $endMinutes % 60
+                            );
+
+                            break;
+                        }
+                    }
+                    unset($originalItem);
+
+                    $previousEndMinutes = $endMinutes;
+                }
+            }
+
 
             // ==========================================
             // KIỂM TRA GIỜ MỞ CỬA VÀ TRÙNG LỊCH

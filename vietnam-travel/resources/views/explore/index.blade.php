@@ -200,10 +200,32 @@
         }
 
         .clear-filter {
-            color: #0f766e;
-            font-size: 14px;
-            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            padding: 10px 16px;
+
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 10px;
+
+            color: #be123c;
+            font-size: 13px;
+            font-weight: 700;
             text-decoration: none;
+
+            transition: all 0.2s ease;
+        }
+
+        .clear-filter:hover {
+            background: #e11d48;
+            border-color: #e11d48;
+            color: white;
+
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(225, 29, 72, 0.18);
         }
 
         /* ============================= */
@@ -810,6 +832,64 @@
         </form>
 
 
+        {{-- BỘ LỌC THEO 3 MIỀN VIỆT NAM --}}
+        <div class="category-filter">
+
+            <div class="category-filter-title">
+                Khám phá theo vùng miền
+            </div>
+
+            <div class="category-options">
+
+                <label class="category-option">
+                    <input
+                        type="radio"
+                        name="region"
+                        value=""
+                        form="exploreFilterForm"
+                        @checked(!request()->filled('region'))
+                    >
+                    <span>🌏 Tất cả</span>
+                </label>
+
+                <label class="category-option">
+                    <input
+                        type="radio"
+                        name="region"
+                        value="north"
+                        form="exploreFilterForm"
+                        @checked(request('region') === 'north')
+                    >
+                    <span>🏔️ Miền Bắc</span>
+                </label>
+
+                <label class="category-option">
+                    <input
+                        type="radio"
+                        name="region"
+                        value="central"
+                        form="exploreFilterForm"
+                        @checked(request('region') === 'central')
+                    >
+                    <span>🏛️ Miền Trung</span>
+                </label>
+
+                <label class="category-option">
+                    <input
+                        type="radio"
+                        name="region"
+                        value="south"
+                        form="exploreFilterForm"
+                        @checked(request('region') === 'south')
+                    >
+                    <span>🌴 Miền Nam</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
         <div class="category-filter">
 
             <div class="category-filter-title">
@@ -868,13 +948,15 @@
                 request()->filled('search') ||
                 request()->filled('type') ||
                 request()->filled('categories') ||
-                request()->filled('category')
+                request()->filled('category') ||
+                request()->filled('region')
             )
 
                 <a
                     href="{{ route('explore.index') }}"
                     class="clear-filter"
                 >
+                    <span aria-hidden="true">✕</span>
                     Xóa bộ lọc
                 </a>
 

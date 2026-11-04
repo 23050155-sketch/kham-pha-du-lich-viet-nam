@@ -617,37 +617,33 @@
         }
 
         .clear-filter-btn {
-            min-height: 42px;
-
             display: inline-flex;
-
             align-items: center;
+            justify-content: center;
+            gap: 7px;
 
-            padding:
-                0 14px;
+            min-height: 42px;
+            padding: 10px 16px;
 
-            border:
-                1px solid
-                #fecaca;
-
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
             border-radius: 10px;
 
-            background: white;
-
-            color: #dc2626;
-
+            color: #be123c;
+            font-size: 13px;
+            font-weight: 700;
             text-decoration: none;
 
-            font-size: 13px;
-            font-weight: 600;
-
-            transition: .2s;
+            transition: all 0.2s ease;
         }
 
         .clear-filter-btn:hover {
-            background: #fef2f2;
+            background: #e11d48;
+            border-color: #e11d48;
+            color: white;
 
-            color: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(225, 29, 72, 0.18);
         }
 
 
@@ -1179,6 +1175,7 @@
                         href="{{ url()->current() }}"
                         class="clear-filter-btn"
                     >
+                        <span aria-hidden="true">✕</span>
                         Xóa bộ lọc
                     </a>
 

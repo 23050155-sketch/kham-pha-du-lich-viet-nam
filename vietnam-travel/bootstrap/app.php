@@ -15,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
+        // Người đã đăng nhập không cần vào lại trang login/register
+        $middleware->redirectUsersTo('/');
+
+        // Người chưa đăng nhập truy cập trang cần tài khoản
+        $middleware->redirectGuestsTo('/login');
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);

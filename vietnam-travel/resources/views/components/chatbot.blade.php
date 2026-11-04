@@ -491,7 +491,7 @@
     });
 
     
-    function addMessage(text, sender) {
+    function addMessage(text, sender, shouldSave = true) {
         const bubble = document.createElement('div');
 
         bubble.className = 'tpdd-chatbot-message ' + sender;
@@ -513,6 +513,17 @@
 
         messages.appendChild(bubble);
         messages.scrollTop = messages.scrollHeight;
+
+        if (shouldSave) {
+            displayedMessages.push({
+                text: String(text),
+                sender: sender
+            });
+
+            displayedMessages = displayedMessages.slice(-50);
+
+            persistChatState();
+        }
     }
 
 
@@ -526,9 +537,48 @@
     // Ghi nhớ lịch trình AI gần nhất đã hiển thị cho người dùng.
     let latestItineraryReply = null;
 
-    // Lưu tối đa 10 tin nhắn gần nhất trong phiên mở trang.
+    // Lưu tối đa 10 tin nhắn gần nhất để gửi cho Gemini.
     const chatHistory = [];
     const MAX_CHAT_HISTORY = 10;
+
+    // Lưu lịch sử hiển thị khi chuyển trang trong cùng tab.
+    const CHAT_STORAGE_KEY = 'tpdd_chat_history_v1';
+    const CHAT_DISPLAY_KEY = 'tpdd_chat_display_v1';
+    const CHAT_ITINERARY_KEY = 'tpdd_chat_itinerary_v1';
+    const CHAT_PREVIEW_KEY = 'tpdd_chat_preview_v1';
+
+    let displayedMessages = [];
+    let latestItineraryPreview = null;
+
+    function persistChatState() {
+        try {
+            sessionStorage.setItem(
+                CHAT_STORAGE_KEY,
+                JSON.stringify(chatHistory)
+            );
+
+            sessionStorage.setItem(
+                CHAT_DISPLAY_KEY,
+                JSON.stringify(displayedMessages.slice(-50))
+            );
+
+            sessionStorage.setItem(
+                CHAT_ITINERARY_KEY,
+                JSON.stringify({
+                    latestItineraryRequest: latestItineraryRequest,
+                    latestItineraryReply: latestItineraryReply
+                })
+            );
+
+            sessionStorage.setItem(
+                CHAT_PREVIEW_KEY,
+                JSON.stringify(latestItineraryPreview)
+            );
+
+        } catch (error) {
+            console.warn('Không thể lưu lịch sử chatbot:', error);
+        }
+    }
 
     function showItineraryPreview(itinerary, draftToken) {
         const preview = document.createElement('div');
@@ -657,6 +707,11 @@
 
             if (data.success && data.redirect_url) {
                 button.textContent = 'Đã lưu thành công';
+
+                // Bản nháp đã được lưu, không khôi phục nút lưu cũ.
+                latestItineraryPreview = null;
+                sessionStorage.removeItem(CHAT_PREVIEW_KEY);
+
                 addMessage(
                     'Đã lưu lịch trình AI thành công! Đang mở trang chi tiết lịch trình...',
                     'bot'
@@ -687,6 +742,36 @@
             isPreparingItinerary = false;
             resetBtn.disabled = false;
         }
+    }
+
+
+    function showItineraryPreviewButton(requestData) {
+        if (!requestData || !requestData.message || !requestData.ai_reply) {
+            return;
+        }
+
+        const previewButton = document.createElement('button');
+        previewButton.type = 'button';
+        previewButton.className = 'tpdd-chatbot-preview-btn';
+        previewButton.textContent = 'Xem trước lịch trình AI';
+        previewButton.title =
+            'Xem trước và xác nhận lưu lịch trình AI vào tài khoản của bạn';
+
+        previewButton.addEventListener('click', function () {
+            prepareItinerary(requestData, previewButton);
+        });
+
+        messages.appendChild(previewButton);
+
+        const saveHint = document.createElement('div');
+        saveHint.style.fontSize = '12px';
+        saveHint.style.color = '#64748b';
+        saveHint.style.marginTop = '4px';
+        saveHint.textContent =
+            'Bạn có thể xem trước, kiểm tra và lưu lịch trình này vào mục "Lịch trình của tôi".';
+
+        messages.appendChild(saveHint);
+        messages.scrollTop = messages.scrollHeight;
     }
 
 
@@ -731,6 +816,13 @@
             }
 
             if (data.success && data.itinerary && data.draft_token) {
+                latestItineraryPreview = {
+                    itinerary: data.itinerary,
+                    draftToken: data.draft_token
+                };
+
+                persistChatState();
+
                 showItineraryPreview(data.itinerary, data.draft_token);
                 button.textContent = 'Đã xem trước lịch trình';
             } else {
@@ -758,9 +850,112 @@
         chatHistory.push({ role, text });
 
         if (chatHistory.length > MAX_CHAT_HISTORY) {
-            chatHistory.splice(0, chatHistory.length - MAX_CHAT_HISTORY);
+            chatHistory.splice(
+                0,
+                chatHistory.length - MAX_CHAT_HISTORY
+            );
+        }
+
+        persistChatState();
+    }
+
+
+    function restoreChatState() {
+        try {
+            const savedHistory = JSON.parse(
+                sessionStorage.getItem(CHAT_STORAGE_KEY) || '[]'
+            );
+
+            const savedMessages = JSON.parse(
+                sessionStorage.getItem(CHAT_DISPLAY_KEY) || '[]'
+            );
+
+            // Khôi phục dữ liệu yêu cầu tạo lịch trình AI
+            const savedItinerary = JSON.parse(
+                sessionStorage.getItem(CHAT_ITINERARY_KEY) || 'null'
+            );
+
+            // Khôi phục bản xem trước lịch trình AI
+            const savedPreview = JSON.parse(
+                sessionStorage.getItem(CHAT_PREVIEW_KEY) || 'null'
+            );
+
+            if (
+                savedPreview &&
+                typeof savedPreview === 'object' &&
+                savedPreview.itinerary &&
+                typeof savedPreview.itinerary === 'object' &&
+                typeof savedPreview.draftToken === 'string' &&
+                savedPreview.draftToken.length > 0
+            ) {
+                latestItineraryPreview = savedPreview;
+            }
+
+            if (savedItinerary && typeof savedItinerary === 'object') {
+                latestItineraryRequest =
+                    savedItinerary.latestItineraryRequest || null;
+
+                latestItineraryReply =
+                    savedItinerary.latestItineraryReply || null;
+            }
+
+            if (Array.isArray(savedHistory)) {
+                chatHistory.length = 0;
+
+                savedHistory.slice(-MAX_CHAT_HISTORY).forEach(function (item) {
+                    if (
+                        item &&
+                        ['user', 'model'].includes(item.role) &&
+                        typeof item.text === 'string'
+                    ) {
+                        chatHistory.push({
+                            role: item.role,
+                            text: item.text
+                        });
+                    }
+                });
+            }
+
+            if (Array.isArray(savedMessages) && savedMessages.length > 0) {
+                messages.innerHTML = '';
+                displayedMessages = [];
+
+                savedMessages.slice(-50).forEach(function (item) {
+                    if (
+                        item &&
+                        ['user', 'bot'].includes(item.sender) &&
+                        typeof item.text === 'string'
+                    ) {
+                        addMessage(item.text, item.sender, false);
+
+                        displayedMessages.push({
+                            text: item.text,
+                            sender: item.sender
+                        });
+                    }
+                });
+            }
+
+            // Khôi phục nút xem trước lịch trình AI khi chuyển trang
+            if (latestItineraryRequest) {
+                showItineraryPreviewButton(latestItineraryRequest);
+            }
+
+            // Khôi phục bản xem trước và nút lưu lịch trình AI
+            if (latestItineraryPreview) {
+                showItineraryPreview(
+                    latestItineraryPreview.itinerary,
+                    latestItineraryPreview.draftToken
+                );
+            }
+
+        } catch (error) {
+            console.warn('Không thể khôi phục lịch sử chatbot:', error);
         }
     }
+
+    restoreChatState();
+
 
     // Bắt đầu cuộc trò chuyện mới
     resetBtn.addEventListener('click', function () {
@@ -770,9 +965,16 @@
 
         latestItineraryRequest = null;
         latestItineraryReply = null;
+        latestItineraryPreview = null;
 
-        // Xóa toàn bộ lịch sử gửi cho Gemini
+        // Xóa lịch sử gửi cho Gemini và lịch sử hiển thị.
         chatHistory.length = 0;
+        displayedMessages = [];
+
+        sessionStorage.removeItem(CHAT_STORAGE_KEY);
+        sessionStorage.removeItem(CHAT_DISPLAY_KEY);
+        sessionStorage.removeItem(CHAT_ITINERARY_KEY);
+        sessionStorage.removeItem(CHAT_PREVIEW_KEY);
 
         // Xóa các tin nhắn đang hiển thị
         messages.innerHTML = '';
@@ -887,28 +1089,17 @@
                     })
                 };
 
+                // Ghi nhớ yêu cầu lịch trình AI mới nhất
                 latestItineraryRequest = requestData;
 
-                const previewButton = document.createElement('button');
-                previewButton.type = 'button';
-                previewButton.className = 'tpdd-chatbot-preview-btn';
-                previewButton.textContent = 'Xem trước lịch trình AI';
-                previewButton.title = 'Xem trước và xác nhận lưu lịch trình AI vào tài khoản của bạn';
+                // Bản xem trước cũ không còn tương ứng với yêu cầu mới
+                latestItineraryPreview = null;
 
-                previewButton.addEventListener('click', function () {
-                    prepareItinerary(requestData, previewButton);
-                });
+                // Cập nhật dữ liệu lưu trong sessionStorage
+                persistChatState();
 
-                messages.appendChild(previewButton);
-
-                const saveHint = document.createElement('div');
-                saveHint.style.fontSize = '12px';
-                saveHint.style.color = '#64748b';
-                saveHint.style.marginTop = '4px';
-                saveHint.textContent = 'Bạn có thể xem trước, kiểm tra và lưu lịch trình này vào mục "Lịch trình của tôi".';
-
-                messages.appendChild(saveHint);
-                messages.scrollTop = messages.scrollHeight;
+                // Hiển thị nút xem trước cho lịch trình mới
+                showItineraryPreviewButton(requestData);
             }
 
 

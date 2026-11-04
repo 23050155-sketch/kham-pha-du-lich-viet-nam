@@ -68,15 +68,16 @@ class AuthController extends Controller
             ]
         );
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user);
-
-        return redirect('/');
+        return redirect('/login')->with(
+            'success',
+            'Đăng ký tài khoản thành công! Vui lòng đăng nhập để tiếp tục.'
+        );
     }
 
 

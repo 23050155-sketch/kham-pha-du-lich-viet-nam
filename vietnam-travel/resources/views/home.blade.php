@@ -62,19 +62,48 @@
                 24px
                 80px;
 
-            background:
-                linear-gradient(
-                    115deg,
-                    rgba(2, 44, 43, 0.82),
-                    rgba(15, 118, 110, 0.50),
-                    rgba(15, 23, 42, 0.35)
-                ),
-                url('../images/home-banner.jpg');
+            background: #0f766e;
 
             background-size: cover;
             background-position: center;
 
             overflow: hidden;
+        }
+
+
+
+        /* ===== HERO SLIDESHOW ===== */
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+
+            background-size: cover;
+            background-position: center;
+
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+
+            z-index: 0;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+
+            background: linear-gradient(
+                115deg,
+                rgba(2, 44, 43, 0.82),
+                rgba(15, 118, 110, 0.50),
+                rgba(15, 23, 42, 0.35)
+            );
+
+            z-index: 1;
+            pointer-events: none;
         }
 
 
@@ -1642,8 +1671,8 @@
         @media (max-width: 480px) {
 
             .hero {
-                min-height: 680px;
-                padding: 105px 14px 50px;
+                min-height: 560px;
+                padding: 105px 14px 45px;
             }
 
             .hero-content h1 {
@@ -1981,6 +2010,295 @@
             text-decoration: none;
         }
 
+
+
+
+        /* ===== HƯỚNG DẪN NGƯỜI MỚI ===== */
+
+        .beginner-section {
+            padding: 75px 24px;
+            background: #ffffff;
+        }
+
+        .beginner-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .beginner-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            background: #f8fafc;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .beginner-card:hover {
+            transform: translateY(-6px);
+            border-color: #14b8a6;
+            box-shadow: 0 15px 35px rgba(15, 118, 110, 0.12);
+        }
+
+        .beginner-icon {
+            font-size: 42px;
+            margin-bottom: 18px;
+        }
+
+        .beginner-card h3 {
+            font-size: 18px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .beginner-card p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .beginner-card strong {
+            margin-top: auto;
+            color: #0f766e;
+            font-size: 13px;
+        }
+
+        @media (max-width: 992px) {
+            .beginner-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .beginner-section {
+                padding: 55px 14px;
+            }
+
+            .beginner-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+        }
+
+
+
+
+        /* ===== KHÁM PHÁ THEO VÙNG MIỀN ===== */
+
+        .region-section {
+            padding: 70px 24px;
+            background: #ffffff;
+        }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .region-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 1px solid #ccfbf1;
+            border-radius: 22px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+            transition: 0.25s ease;
+            cursor: pointer;
+        }
+
+        .region-card:focus-visible {
+            outline: 3px solid #14b8a6;
+            outline-offset: 4px;
+        }
+
+        .region-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 38px rgba(15, 118, 110, 0.13);
+            text-decoration: none;
+        }
+
+        .region-image {
+            height: 240px;
+            overflow: hidden;
+            background: #ccfbf1;
+        }
+
+        .region-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .region-card:hover .region-image img {
+            transform: scale(1.06);
+        }
+
+        .region-content {
+            padding: 24px;
+        }
+
+        .region-content > span {
+            color: #0d9488;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .region-content h3 {
+            margin: 10px 0;
+            font-size: 26px;
+            color: #0f172a;
+        }
+
+        .region-content p {
+            min-height: 90px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .region-examples {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #e2e8f0;
+            color: #0f766e;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 992px) {
+            .region-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .region-section {
+                padding: 40px 14px;
+            }
+
+            .region-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .region-image {
+                height: 210px;
+            }
+
+            .region-content p {
+                min-height: auto;
+            }
+        }
+
+
+
+        
+        /* ===== GIỚI THIỆU CHATBOT TRÊN HOME ===== */
+
+        .home-ai-section {
+            padding: 75px 24px;
+            background: #f0fdfa;
+        }
+
+        .home-ai-content {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 48px 32px;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #ccfbf1;
+            border-radius: 24px;
+            box-shadow: 0 12px 35px rgba(15, 118, 110, 0.08);
+        }
+
+        .home-ai-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .home-ai-content h2 {
+            font-size: clamp(24px, 3vw, 34px);
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .home-ai-content > p {
+            max-width: 650px;
+            margin: 0 auto 26px;
+            color: #64748b;
+            line-height: 1.8;
+        }
+
+        .home-ai-questions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .home-ai-questions span {
+            color: #0f766e;
+            font-size: 14px;
+        }
+
+        .home-ai-button {
+            padding: 14px 28px;
+            background: #0f766e;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .home-ai-button:hover {
+            background: #115e59;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 640px) {
+            .home-ai-section {
+                padding: 45px 14px;
+            }
+
+            .home-ai-content {
+                padding: 32px 18px;
+            }
+        }
+
+
+
+        .home-ai-question {
+            display: block;
+            width: 100%;
+            padding: 12px 18px;
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            border-radius: 12px;
+            color: #0f766e;
+            font-size: 14px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .home-ai-question:hover {
+            background: #ccfbf1;
+            border-color: #14b8a6;
+            transform: translateX(4px);
+        }
     </style>
 </head>
 
@@ -1992,6 +2310,33 @@
 
 
 <section class="hero">
+
+
+    <!-- Ảnh nền tự động chuyển -->
+
+    <div
+        class="hero-slide active"
+        style="background-image: url('{{ asset('images/home-banner.jpg') }}');"
+    ></div>
+
+    <div
+        class="hero-slide"
+        style="background-image: url('{{ asset('images/home-banner-2.jpg') }}');"
+    ></div>
+
+    <div
+        class="hero-slide"
+        style="background-image: url('{{ asset('images/home-banner-3.jpg') }}');"
+    ></div>
+
+    <div
+        class="hero-slide"
+        style="background-image: url('{{ asset('images/home-banner-4.jpg') }}');"
+    ></div>
+
+    <!-- Lớp phủ màu giúp chữ dễ đọc -->
+    <div class="hero-overlay"></div>
+
 
     <div class="hero-content">
 
@@ -2105,6 +2450,167 @@
 
 
 
+{{-- HƯỚNG DẪN NGƯỜI MỚI KHÁM PHÁ --}}
+
+<section class="beginner-section">
+    <div class="section-container">
+
+        <div class="section-heading">
+            <span>🌏 Khám phá dễ dàng</span>
+
+            <h2>Lần đầu khám phá Việt Nam?</h2>
+
+            <p>
+                Bạn chưa biết nên bắt đầu từ đâu?
+                Hãy chọn một trải nghiệm yêu thích để tìm
+                những điểm đến đầu tiên phù hợp với mình.
+            </p>
+        </div>
+
+        <div class="beginner-grid">
+
+            <a href="{{ route('explore.index', ['category' => $categories->firstWhere('name', 'Biển')?->id]) }}"
+               class="beginner-card">
+                <span class="beginner-icon">🏖️</span>
+                <h3>Tôi thích biển</h3>
+                <p>Khám phá những bãi biển và hòn đảo đẹp.</p>
+                <strong>Khám phá →</strong>
+            </a>
+
+            <a href="{{ route('explore.index', ['category' => $categories->firstWhere('name', 'Núi')?->id]) }}"
+               class="beginner-card">
+                <span class="beginner-icon">⛰️</span>
+                <h3>Tôi thích núi</h3>
+                <p>Khám phá núi rừng và cảnh quan thiên nhiên.</p>
+                <strong>Khám phá →</strong>
+            </a>
+
+            <a href="{{ route('explore.index', ['category' => $categories->firstWhere('name', 'Văn hóa')?->id]) }}"
+               class="beginner-card">
+                <span class="beginner-icon">🏛️</span>
+                <h3>Tôi thích văn hóa</h3>
+                <p>Khám phá di sản, kiến trúc và lịch sử.</p>
+                <strong>Khám phá →</strong>
+            </a>
+
+            <a href="{{ route('explore.index') }}"
+               class="beginner-card">
+                <span class="beginner-icon">🌿</span>
+                <h3>Tôi muốn khám phá thêm</h3>
+                <p>Xem tất cả địa điểm và lựa chọn trải nghiệm.</p>
+                <strong>Khám phá →</strong>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+
+{{-- KHÁM PHÁ VIỆT NAM THEO VÙNG MIỀN --}}
+
+<section class="region-section" id="regions">
+    <div class="section-container">
+
+        <div class="section-heading">
+            <span>🧭 Khám phá theo vùng miền</span>
+
+            <h2>Ba miền Việt Nam có gì đặc biệt?</h2>
+
+            <p>
+                Mỗi miền đất nước mang một vẻ đẹp riêng.
+                Khám phá đặc trưng từng vùng để tìm
+                điểm đến phù hợp với bạn.
+            </p>
+        </div>
+
+        <div class="region-grid">
+
+            <a href="{{ route('explore.index', ['region' => 'north']) }}"
+                class="region-card">
+                <div class="region-image">
+                    <img
+                        src="{{ asset('images/region-north.jpg') }}"
+                        alt="Phong cảnh miền Bắc Việt Nam"
+                        loading="lazy"
+                    >
+                </div>
+
+                <div class="region-content">
+                    <span>⛰️ Thiên nhiên và văn hóa</span>
+                    <h3>Miền Bắc</h3>
+
+                    <p>
+                        Nổi bật với núi rừng Tây Bắc,
+                        Vịnh Hạ Long, Hà Nội và những
+                        nét văn hóa truyền thống.
+                    </p>
+
+                    <div class="region-examples">
+                        Hà Nội · Hạ Long · Sa Pa
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ route('explore.index', ['region' => 'central']) }}"
+                class="region-card">
+                <div class="region-image">
+                    <img
+                        src="{{ asset('images/region-central.jpg') }}"
+                        alt="Phong cảnh miền Trung Việt Nam"
+                        loading="lazy"
+                    >
+                </div>
+
+                <div class="region-content">
+                    <span>🏖️ Di sản và biển đẹp</span>
+                    <h3>Miền Trung</h3>
+
+                    <p>
+                        Khám phá những bãi biển đẹp,
+                        phố cổ Hội An, cố đô Huế
+                        và nhiều di sản đặc sắc.
+                    </p>
+
+                    <div class="region-examples">
+                        Huế · Đà Nẵng · Hội An
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ route('explore.index', ['region' => 'south']) }}"
+                class="region-card">
+                <div class="region-image">
+                    <img
+                        src="{{ asset('images/region-south.jpg') }}"
+                        alt="Phong cảnh miền Nam Việt Nam"
+                        loading="lazy"
+                    >
+                </div>
+
+                <div class="region-content">
+                    <span>🌴 Sông nước và trải nghiệm</span>
+                    <h3>Miền Nam</h3>
+
+                    <p>
+                        Trải nghiệm nhịp sống sôi động,
+                        khám phá miền Tây sông nước
+                        và thưởng thức ẩm thực phương Nam.
+                    </p>
+
+                    <div class="region-examples">
+                        TP.HCM · Cần Thơ · Phú Quốc
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+
+
 {{-- KHÁM PHÁ THEO SỞ THÍCH --}}
 
 <section class="category-section">
@@ -2205,145 +2711,128 @@
 
 
 
-@auth
+{{-- ====================================== --}}
+{{-- ĐỊA ĐIỂM DU LỊCH THEO THÁNG HIỆN TẠI --}}
+{{-- ====================================== --}}
 
-    @if($recommendedPlaces->isNotEmpty())
+<section class="featured-section" id="monthly-places">
 
-        <section class="recommend-section">
+    <div class="section-container">
 
-            <div class="recommend-container">
+        <div class="section-heading">
 
-                <div class="recommend-heading">
+            <span>📅 Gợi ý theo mùa</span>
 
-                    @if($recommendationMode === 'popular')
+            <h2>
+                Địa điểm du lịch lý tưởng tháng {{ $currentMonth }}
+            </h2>
 
-                        <span>
-                            🔥 Đang được quan tâm
-                        </span>
+            <p>
+                Khám phá những địa điểm du lịch phù hợp
+                với thời điểm hiện tại để lên kế hoạch
+                cho chuyến đi của bạn.
+            </p>
 
-                        <h2>
-                            Gợi ý địa điểm dành cho bạn
-                        </h2>
+        </div>
 
-                        <p>
-                            Những địa điểm được gợi ý dựa trên
-                            xu hướng tìm kiếm phổ biến của người dùng.
-                        </p>
+        <div class="featured-grid">
 
-                    @else
+            @forelse($monthlyPlaces as $place)
 
-                        <span>
-                            ✨ Dành cho bạn
-                        </span>
+                <div class="home-compare-card">
 
-                        <h2>
-                            Gợi ý địa điểm dành cho bạn
-                        </h2>
+                    <a
+                        href="{{ route('places.show', $place->slug) }}"
+                        class="featured-card"
+                    >
 
-                        <p>
-                            Những địa điểm được đề xuất dựa trên
-                            hoạt động và sở thích của bạn.
-                        </p>
+                        <div class="featured-image">
 
-                    @endif
+                            @if($place->cover_image)
 
-                </div>
+                                <img
+                                    src="{{ asset($place->cover_image) }}"
+                                    alt="{{ $place->name }}"
+                                    loading="lazy"
+                                >
 
+                            @else
 
-                <div class="recommend-grid">
-
-                    @foreach($recommendedPlaces as $place)
-                    <div class="home-compare-card"> 
-                        <a
-                            href="{{ route(
-                                'places.show',
-                                $place->slug
-                            ) }}"
-                            class="recommend-card"
-                        >
-
-                            <div class="recommend-image">
-
-                                @if($place->cover_image)
-
-                                    <img
-                                        src="{{ asset(
-                                            $place->cover_image
-                                        ) }}"
-                                        alt="{{ $place->name }}"
-                                    >
-
-                                @else
-
-                                    <div class="recommend-no-image">
-                                        📍
-                                    </div>
-
-                                @endif
-
-                            </div>
-
-
-                            <div class="recommend-content">
-
-                                @if($place->province)
-
-                                    <span class="recommend-province">
-                                        📍 {{ $place->province->name }}
-                                    </span>
-
-                                @endif
-
-
-                                <h3>
-                                    {{ $place->name }}
-                                </h3>
-
-
-                                <p>
-                                    {{
-                                        $place->short_description
-                                        ?: 'Khám phá địa điểm du lịch nổi bật.'
-                                    }}
-                                </p>
-
-
-                                <div class="recommend-bottom">
-
-                                    <span>
-                                        👁️ {{ number_format(
-                                            $place->view_count ?? 0
-                                        ) }}
-                                    </span>
-
-                                    <strong>
-                                        Xem chi tiết →
-                                    </strong>
-
+                                <div class="featured-no-image">
+                                    📍
                                 </div>
 
-                            </div>
+                            @endif
 
-                        </a>
+                            <span class="featured-badge">
+                                📅 Tháng {{ $currentMonth }}
+                            </span>
 
-                        
-                        <div class="home-compare-action">
-                            <x-compare-button :place="$place" />
                         </div>
 
-                    </div>
+                        <div class="featured-content">
 
-                    @endforeach
+                            @if($place->province)
+
+                                <span class="featured-province">
+                                    {{ $place->province->name }}
+                                </span>
+
+                            @endif
+
+                            <h3>{{ $place->name }}</h3>
+
+                            <p>
+                                {{
+                                    $place->short_description
+                                    ?: 'Khám phá địa điểm du lịch phù hợp trong tháng '
+                                    . $currentMonth . '.'
+                                }}
+                            </p>
+
+                            <div class="featured-bottom">
+
+                                <span class="featured-price">
+                                    🌤️ {{ $place->best_months ?: 'Quanh năm' }}
+                                </span>
+
+                                <span class="featured-detail">
+                                    Xem chi tiết →
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <div class="home-compare-action">
+                        <x-compare-button :place="$place" />
+                    </div>
 
                 </div>
 
-            </div>
+            @empty
 
-        </section>
+                <div class="featured-empty">
 
-    @endif
+                    <span>📅</span>
 
-@endauth
+                    <p>
+                        Hiện chưa có địa điểm phù hợp
+                        với tháng {{ $currentMonth }}.
+                    </p>
+
+                </div>
+
+            @endforelse
+
+        </div>
+
+    </div>
+
+</section>
+
 
 
 
@@ -2508,7 +2997,7 @@
 </section>
 
 
-
+{{-- Địa điểm được quan tâm nhiều --}}
 <section class="popular-section">
 
     <div class="section-container">
@@ -2644,6 +3133,185 @@
 </section>
 
 
+{{-- Gợi ý địa điểm dành cho bạn --}}
+@auth
+
+    @if($recommendedPlaces->isNotEmpty())
+
+        <section class="recommend-section">
+
+            <div class="recommend-container">
+
+                <div class="recommend-heading">
+
+                    @if($recommendationMode === 'popular')
+
+                        <span>
+                            🔥 Đang được quan tâm
+                        </span>
+
+                        <h2>
+                            Gợi ý địa điểm dành cho bạn
+                        </h2>
+
+                        <p>
+                            Những địa điểm được gợi ý dựa trên
+                            xu hướng tìm kiếm phổ biến của người dùng.
+                        </p>
+
+                    @else
+
+                        <span>
+                            ✨ Dành cho bạn
+                        </span>
+
+                        <h2>
+                            Gợi ý địa điểm dành cho bạn
+                        </h2>
+
+                        <p>
+                            Những địa điểm được đề xuất dựa trên
+                            hoạt động và sở thích của bạn.
+                        </p>
+
+                    @endif
+
+                </div>
+
+
+                <div class="recommend-grid">
+
+                    @foreach($recommendedPlaces as $place)
+                    <div class="home-compare-card"> 
+                        <a
+                            href="{{ route(
+                                'places.show',
+                                $place->slug
+                            ) }}"
+                            class="recommend-card"
+                        >
+
+                            <div class="recommend-image">
+
+                                @if($place->cover_image)
+
+                                    <img
+                                        src="{{ asset(
+                                            $place->cover_image
+                                        ) }}"
+                                        alt="{{ $place->name }}"
+                                    >
+
+                                @else
+
+                                    <div class="recommend-no-image">
+                                        📍
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+
+                            <div class="recommend-content">
+
+                                @if($place->province)
+
+                                    <span class="recommend-province">
+                                        📍 {{ $place->province->name }}
+                                    </span>
+
+                                @endif
+
+
+                                <h3>
+                                    {{ $place->name }}
+                                </h3>
+
+
+                                <p>
+                                    {{
+                                        $place->short_description
+                                        ?: 'Khám phá địa điểm du lịch nổi bật.'
+                                    }}
+                                </p>
+
+
+                                <div class="recommend-bottom">
+
+                                    <span>
+                                        👁️ {{ number_format(
+                                            $place->view_count ?? 0
+                                        ) }}
+                                    </span>
+
+                                    <strong>
+                                        Xem chi tiết →
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                        
+                        <div class="home-compare-action">
+                            <x-compare-button :place="$place" />
+                        </div>
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        </section>
+
+    @endif
+
+@endauth
+
+
+{{-- GIỚI THIỆU TRỢ LÝ DU LỊCH AI --}}
+<section class="home-ai-section">
+    <div class="home-ai-content">
+        <div class="home-ai-icon">🤖</div>
+
+        <h2>Chưa biết nên đi đâu tại Việt Nam?</h2>
+
+        <p>
+            Đừng lo! Trợ lý du lịch AI của TPĐĐ Travel
+            sẽ giúp bạn tìm hiểu các điểm đến, lựa chọn
+            nơi phù hợp và lên kế hoạch cho chuyến đi.
+        </p>
+
+        <div class="home-ai-questions">
+            <button type="button" class="home-ai-question"
+                    data-question="Lần đầu đến Việt Nam nên đi đâu?">
+                💬 Lần đầu đến Việt Nam nên đi đâu?
+            </button>
+
+            <button type="button" class="home-ai-question"
+                    data-question="Tháng 11 này nên du lịch ở đâu?">
+                💬 Tháng 11 này nên du lịch ở đâu?
+            </button>
+
+            <button type="button" class="home-ai-question"
+                    data-question="Tôi thích biển, hãy gợi ý địa điểm đẹp.">
+                💬 Tôi thích biển, hãy gợi ý địa điểm đẹp.
+            </button>
+        </div>
+
+        <button type="button"
+                class="home-ai-button"
+                id="homeOpenChatbot">
+            🤖 Hỏi trợ lý AI ngay →
+        </button>
+    </div>
+</section>
 
 
 {{-- ====================================== --}}
@@ -2938,7 +3606,70 @@
 
     <x-compare-bar />
 
-    <x-chatbot />          
+    <x-chatbot />
+    
+    
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const slides = document.querySelectorAll('.hero-slide');
+
+    if (slides.length <= 1) return;
+
+    let currentSlide = 0;
+
+    setInterval(function () {
+
+        slides[currentSlide].classList.remove('active');
+
+        currentSlide = (currentSlide + 1) % slides.length;
+
+        slides[currentSlide].classList.add('active');
+
+    }, 5000);
+
+});
+</script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const openButton = document.getElementById('homeOpenChatbot');
+    const chatbotToggle = document.getElementById('tpddChatbotToggle');
+    const chatbotWindow = document.getElementById('tpddChatbotWindow');
+
+    if (!openButton || !chatbotToggle || !chatbotWindow) {
+        return;
+    }
+
+    openButton.addEventListener('click', function () {
+        if (chatbotWindow.hidden) {
+            chatbotToggle.click();
+        }
+    });
+
+    const questionButtons = document.querySelectorAll('.home-ai-question');
+    const chatbotInput = document.getElementById('tpddChatbotInput');
+
+    questionButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            if (!chatbotToggle || !chatbotWindow || !chatbotInput) {
+                return;
+            }
+
+            if (chatbotWindow.hidden) {
+                chatbotToggle.click();
+            }
+
+            chatbotInput.value = button.dataset.question;
+            chatbotInput.focus();
+        });
+    });
+});
+</script>
+
 
 </body>
 </html>

@@ -111,15 +111,22 @@
             font-weight: 600;
         }
 
-        .error-box {
-            background: #fee2e2;
-            color: #b91c1c;
-
-            padding: 12px 15px;
-
-            border-radius: 10px;
+        .success-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
 
             margin-bottom: 20px;
+            padding: 14px 16px;
+
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+
+            color: #047857;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.6;
         }
 
 
@@ -202,6 +209,13 @@
         <p class="auth-subtitle">
             Đăng nhập để tiếp tục khám phá
         </p>
+
+        @if(session('success'))
+            <div class="success-box" role="status">
+                <span aria-hidden="true">✓</span>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
 
         @if($errors->any())
 

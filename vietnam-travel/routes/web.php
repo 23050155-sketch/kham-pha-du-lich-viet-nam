@@ -42,15 +42,18 @@ Route::get('/compare', [CompareController::class, 'index'])
     ->name('compare.index');
 
 Route::get('/register', [AuthController::class, 'showRegister'])
+    ->middleware('guest')
     ->name('register');
 
 Route::post('/register', [AuthController::class, 'register'])
     ->name('register.submit');
 
 Route::get('/login', [AuthController::class, 'showLogin'])
+    ->middleware('guest')
     ->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('guest')
     ->name('login.submit');
 
 // Quên mật khẩu
